@@ -1,0 +1,76 @@
+{% extends "site.twig" %}
+
+{% block content %}
+
+        <div class="col-lg-8">
+                {% if session_has('message') %}
+                    <div class="alert alert-success">
+                        {{ session_get('message') }}
+                    </div>
+                {% endif %}
+
+                    <p align="right"><a href="/" class="glyphicon glyphicon-arrow-left"></a></p>
+                    {% if auth_user().can('delete.all') %}
+                    <p class="pull-right">
+                        <a href="{{ route('article.update', val.id) }}" class="glyphicon glyphicon-edit"></a>
+                        <a href="{{ route('article.delete', val.id) }}" class="glyphicon glyphicon-trash"></a>
+                    </p>
+                    {% endif %}
+                    <h1>{{ article.title }}</h1>
+                    <p class="lead">{{ article.user.name }}</p>
+                    <hr>
+                    <p><span class="glyphicon glyphicon-time"></span> Опубликовано {{ article.date }}</p>
+                    <hr>
+                    <p>{{ article.text }}</p>
+                    <hr>
+                        {% if errors|length > 0 %}
+                            <div class="alert alert-danger">
+                                <div class="errors">
+                                    <ul>
+                                        {% for error in errors.all() %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                    <div class="well">
+                        <h4>Оставить комментарий:</h4>
+                        <form role="form" action="{{ route('comment.add') }}"   method="post">
+
+                            <div class="form-group">
+                                <label for="email">Введите email</label>
+                                <input type="email" class="form-control"  name="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="text">Введите текст комментария</label>
+                                <textarea name="text" class="form-control"></textarea>
+                            </div>
+                            <p class="pull-right"><input type="submit" class="btn btn-primary" value="Отправить"></p>
+                            <input type="hidden" name="article_id" value={{ article.id }}>
+                            <input type="hidden" name="_token" value="{{  csrf_token() }}">
+                        </form>
+                    </div>
+                    <hr>
+                    {% for val in article.comments %}
+                         {% if auth_user().can('delete.all') %}<p class="pull-right">
+                                <a href="{{ route('view.comment.update', val.id) }}" class="glyphicon glyphicon-edit"></a>
+                                <a href="{{ route('comment.delete', val.id) }}" class="glyphicon glyphicon-trash"></a>
+                             </p>{% endif %}
+                        {% if auth_user().can('comment.'~val.id) %}<p class="pull-right">
+                            <a href="{{ route('view.comment.update', val.id) }}" class="glyphicon glyphicon-edit"></a>
+                            </p>{% endif %}
+                        <div class="media">
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    {{ val.email }}
+                                    <small>{{ val.date }}</small>
+                                </h4>
+                                {{ val.text }}
+                            </div>
+                        </div>
+                        <hr>
+                    {% endfor %}
+            </div>
+
+{% endblock %}

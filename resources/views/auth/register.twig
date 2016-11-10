@@ -1,0 +1,44 @@
+{% extends "site.twig" %}
+
+{% block content %}
+
+    {% if errors|length > 0 %}
+        <div class="alert alert-danger">
+            <div class="errors">
+                <ul>
+                    {% for error in errors.all() %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+<form method="POST" action="http://demoblog.local/auth/register">
+    <input type="hidden" name="_token" value="{{  csrf_token() }}">
+
+    <table>
+        <tr>
+            <td>Name</td>
+            <td><input type="text" name="name" value="{{ old('name') }}"></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input type="email" name="email" value="{{ old('email') }}"></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>Confirm Password</td>
+            <td><input type="password" name="password_confirmation"></td>
+        </tr>
+    </table>
+
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</form>
+
+{% endblock %}

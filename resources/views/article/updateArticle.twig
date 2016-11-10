@@ -1,0 +1,47 @@
+{% extends "site.twig" %}
+
+{% block content %}
+
+    <div class="col-md-8">
+        <p align="right"><a href="/" class="glyphicon glyphicon-arrow-left"></a></p>
+        <h1 class="page-header">Редактировать статью</h1>
+
+        {% if session_has('message') %}
+            <div class="alert alert-danger">
+                {{ session_get('message') }}
+            </div>
+        {% endif %}
+
+        {% if errors|length > 0 %}
+            <div class="alert alert-danger">
+                <div class="errors">
+                    <ul>
+                        {% for error in errors.all() %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="well">
+            <h4>Заполните поля:</h4>
+            <form role="form" action="{{ route('article.update') }}"   method="post">
+                <div class="form-group">
+                    <label for="title">Заголовок</label>
+                    <input type="text" class="form-control" name="title" value="{{ article.title }}">
+                </div>
+                <div class="form-group">
+                    <label for="text">Текст записи</label>
+                    <textarea name="text" class="form-control" cols="60" rows="10"> {{ article.text }}</textarea>
+                </div>
+                    <p class="pull-right"><input type="submit" class="btn btn-primary" value="Отправить"></p>
+                    <input type="hidden" name="_token" value="{{  csrf_token() }}">
+                    <input type="hidden" name="id" value="{{  article.id }}">
+                    <input type="hidden" name="user_id" value="{{  article.user_id }}">
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

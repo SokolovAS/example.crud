@@ -1,0 +1,7 @@
+.env
+composer.phar
+^storage/*
+^vendor/*
+.idea/*
+^bootstrap/cache/*
+^node_modules/*
